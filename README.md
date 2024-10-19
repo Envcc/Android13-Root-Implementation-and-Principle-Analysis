@@ -1,6 +1,8 @@
 Android 13 is a relatively new version of Android (this patch was modified half a year ago). It brings many new features and improvements, but also adds some security restrictions. It is more troublesome to get root permissions for the system than in previous versions. If you want to have full control on Android 13, you need to modify some system files and kernel code to bypass SELinux, Verity, and other protection mechanisms. This article will introduce a method of implementing root functionality on Android 13, as well as the files and code that need to be modified.
 If your device does not support GMS , you can do whatever you want. But be careful, if your product involves banking education, their APP products may not work!
+
 This method is for debugging purposes only.
+
 Prerequisites
 To make a machine, the following conditions are required:
 • Android 13 source code and devices
@@ -8,6 +10,8 @@ To make a machine, the following conditions are required:
 • Smarter brain
 Step 1: Modify system files
 Some system files need to be modified to allow the adbd process to run under the root user and turn off Verity checks. We need to modify the following files:
+
+
 1.frameworks/base/core/jni/com_android_internal_os_Zygote.cpp
 This file is responsible for creating application processes and setting their permissions and capabilities. You need to comment out DropCapabilitiesBoundingSetthe code in the function to prevent it from deleting any capabilities of the adbd process. This file should be commented out in previous versions.
 @@ -658,7 +658,7 @@ static void EnableKeepCapabilities(fail_fn_t fail_fn) {
